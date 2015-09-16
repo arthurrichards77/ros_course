@@ -1,0 +1,7 @@
+<launch>
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+    <node name="bounce" pkg="ros_course" type="bounce.py">
+      <remap from="turtle1/cmd_vel" to="turtle1/ref_vel" />
+    </node>
+    <node name="avoid" pkg="ros_course" type="avoid.py" />
+</launch>

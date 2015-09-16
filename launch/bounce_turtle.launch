@@ -1,0 +1,4 @@
+<launch>
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+    <node name="bounce" pkg="ros_course" type="bounce.py" />
+</launch>

@@ -1,0 +1,6 @@
+<launch>
+    <param name="turtle1/target/x" value="1.0" />
+    <param name="turtle1/target/y" value="3.0" />
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+    <node name="target" pkg="ros_course" type="target.py" />
+</launch>

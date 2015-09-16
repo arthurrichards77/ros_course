@@ -1,0 +1,19 @@
+<launch>
+  
+  <include file="$(find ros_course)/launch/avoid_turtle.launch"/>
+  
+  <node name="rviz" pkg="rviz" type="rviz" />
+
+  <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
+
+
+
+
+  
+  <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
+  
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <param name="tf_prefix" value="/turtle1" />
+
+</launch>

@@ -1,0 +1,21 @@
+<launch>
+  
+  <group ns="bob">
+
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  
+    <node name="bounce" pkg="ros_course" type="bounce.py" />
+  
+  </group>
+
+  <group ns="margaret">
+
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  
+    <param name="turtle1/target/x" value="1.0" />
+    <param name="turtle1/target/y" value="3.0" />
+    <node name="target" pkg="ros_course" type="target.py" />
+    
+  </group>
+
+</launch>

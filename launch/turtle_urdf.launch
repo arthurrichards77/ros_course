@@ -1,0 +1,17 @@
+<launch>
+  
+  <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
+  
+  <node name="rviz" pkg="rviz" type="rviz" />
+
+  <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+  
+  <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
+  
+  <node name="drive" pkg="ros_course" type="bounce.py" />
+  
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <param name="tf_prefix" value="/turtle1" />
+
+</launch>
