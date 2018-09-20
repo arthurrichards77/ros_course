@@ -2,7 +2,7 @@
   
   <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
   
-  <node name="rviz" pkg="rviz" type="rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_course)/launch/stare.rviz" />
 
   <group ns="bob">
 
@@ -18,17 +18,13 @@
 
   <group ns="margaret">
 
-    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
-  
+    <include file="$(find ros_course)/launch/bounce_turtle.launch" />
+
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
   
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
 
     <param name="tf_prefix" value="/margaret/turtle1" />
-
-    <param name="turtle1/target/x" value="1.0" />
-    <param name="turtle1/target/y" value="3.0" />
-    <node name="target" pkg="ros_course" type="target.py" />
     
   </group>
 

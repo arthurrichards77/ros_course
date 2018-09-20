@@ -9,6 +9,8 @@ pub = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size=1)
 rospy.init_node('driver')
 # will be updating at 2 Hz
 r = rospy.Rate(2)
+# constant speed for now
+turtle_speed = 2.0
 
 while not rospy.is_shutdown():
    # make a blank velocity message
