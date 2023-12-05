@@ -290,3 +290,20 @@ Make a file called `turtle.launch` in a `launch` directory below `src` in your p
    <node name="control1" pkg="ros_course" type="drive.py" />
 </launch>
 ```
+Now run it using
+```
+roslaunch ros_course turtle.launch
+```
+Three things happen at once: a `roscore` is launched for you, so is a simulator, and so is your driver code.  You should see a turtle wandering aimlessly.  Stop everything with a single `<Ctrl>+C`.
+
+Copy your file to `turtle2.launch` and edit to the following:
+```xml
+<launch>
+   <param name="turtle1/turtle_speed" value="0.3" />
+   <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+   <node name="control1" pkg="ros_course" type="drive.py" />
+</launch>
+```
+Run this one and you should see a slow turtle, as a result of setting the speed parameter.
+
+Now try this file, which reproduces the example where two turtles are driven by the same driver using a re-map:
