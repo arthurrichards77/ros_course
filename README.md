@@ -251,8 +251,22 @@ Now kill the second turtle simulator and try this:
 ```
 ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node /t2/turtle1/cmd_vel:=/turtle1/cmd_vel
 ```
-
-![ROS topic graph](remap_graph.png)
 Try driving the first turtle and you should see the second one go as well.  Use `rqt-graph` to verify what's going on.  You should see that the re-map has connected the second turtle's input to the same topic as the first turtle.
 
+![ROS topic graph](remap_graph.png)
 
+### Namespace
+
+Get back to having two turtles running again, independently.  From scratch:
+```
+rosrun turtlesim turtlesim_node
+ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node
+```
+Now run your feedback controller node using:
+```
+rosrun ros_course <your turtle control node>
+```
+You should see the first turtle do its wobbling around in circles but the second turtle stay still.  Now start a second controller using:
+```
+ROS_NAMESPACE=/t2 rosrun ros_course <your turtle control node>
+```
