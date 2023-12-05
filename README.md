@@ -320,4 +320,30 @@ Now try this file, which reproduces the example where two turtles are driven by 
 ```
 Here the `ns=` attribute in the second `<node>` element puts the second turtle in its `/t2` namespace.  Then the `<remap>` element nested in that `<node>` element remaps the input back to the same as for the other turtle.  Launch files can do both namespaces and re-maps.
 
+Now try this one, which has separate drivers for each turtle.  It uses a `<group>` element to push both simulator and driver nodes to the `/t2` namespace.
+```xml
+<launch>
+  <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+  <node name="driver1" pkg="ros_course" type="drive2.py" />
 
+  <group ns="/t2">
+    <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+    <node name="driver1" pkg="ros_course" type="drive2.py" />
+  </group>
+
+</launch>
+```
+
+Last but not least, launch files can invoke other launch files via nesting, so the next example is equivalent to the previous one.
+```xml
+<launch>
+
+  <include file="$(find ros_course)/launch/turtle.launch" />
+
+  <group ns="t2">
+    <include file="$(find ros_course)/launch/turtle.launch" />
+  </group>
+
+</launch>
+```
+Isn't that tidy?
