@@ -307,3 +307,17 @@ Copy your file to `turtle2.launch` and edit to the following:
 Run this one and you should see a slow turtle, as a result of setting the speed parameter.
 
 Now try this file, which reproduces the example where two turtles are driven by the same driver using a re-map:
+```xml
+<launch>
+  <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+
+  <node ns="t2" name="turtle2" pkg="turtlesim" type="turtlesim_node">
+    <remap from="/t2/turtle1/cmd_vel" to="/turtle1/cmd_vel" />
+  </node>
+
+  <node name="driver1" pkg="ros_course" type="drive.py" />
+</launch>
+```
+Here the `ns=` attribute in the second `<node>` element puts the second turtle in its `/t2` namespace.  Then the `<remap>` element nested in that `<node>` element remaps the input back to the same as for the other turtle.  Launch files can do both namespaces and re-maps.
+
+
