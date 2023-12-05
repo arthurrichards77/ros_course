@@ -270,3 +270,23 @@ You should see the first turtle do its wobbling around in circles but the second
 ```
 ROS_NAMESPACE=/t2 rosrun ros_course <your turtle control node>
 ```
+
+### Summary
+
+Re-maps are great for re-use or re-plumbing.  If you have downloaded a package for some job, but your robot uses different names for the sensor or control channels, re-map is the answer.  Or, you might want to break an existing connection and put something extra in the loop -- again, re-mapping will solve the problem.
+
+Namespaces are great for repetition.  Suppose you want to have three robots, or your robot has two arms, left and right.  Namespaces for each will enable slick re-use of the same functionality without code changes.
+
+Overall, these features greatly add to ROS' modularity: the ability to make a node that does a job, and then leave it untouched while you use it in different ways.
+
+## Launch files
+
+By now, you ought to be fed up launching terminals and keeping track of them.  Stop everything you have running, including your `roscore`, and have just one terminal.  We'll use launch files to run all the examples above with just one command.
+
+Make a file called `turtle.launch` in a `launch` directory below `src` in your package, containing the following:
+```xml
+<launch>
+   <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+   <node name="control1" pkg="ros_course" type="drive.py" />
+</launch>
+```
