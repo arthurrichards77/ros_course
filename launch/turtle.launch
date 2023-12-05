@@ -1,0 +1,5 @@
+<launch>
+  <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+  <node name="driver1" pkg="ros_course" type="drive.py" />
+</launch>
+

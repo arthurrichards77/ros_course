@@ -1,0 +1,10 @@
+<launch>
+  <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+
+  <node ns="t2" name="turtle2" pkg="turtlesim" type="turtlesim_node">
+    <remap from="/t2/turtle1/cmd_vel" to="/turtle1/cmd_vel" />
+  </node>
+
+  <node name="driver1" pkg="ros_course" type="drive2.py" />
+</launch>
+
