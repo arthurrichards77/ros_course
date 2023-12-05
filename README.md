@@ -229,7 +229,7 @@ Modify your turtle controller so the turtle changes direction when it hits a wal
 
 ## Namespaces and re-mapping
 
-When accessing files in code, you're probably familiar with the idea of a relative path, interpreted with respect to the current working directory.  ROS does something similar with topics, which can be relative to the current working _namespace_.  Now we'll use this idea to re-use our existing code to drive two different turtles.
+When accessing files in code, you're probably familiar with the idea of a relative path, interpreted with respect to the current working directory.  ROS does something similar with topics, which can be relative to the current working _namespace_.  ROS also enables specific re-mapping of names, such that inputs or outputs of a node can be re-routed to different topics without changing the source code.  Now we'll use these ideas to re-use our existing code to drive two different turtles.
 
 Get your first turtle simulator up and running and then start a second using the following.
 ```
@@ -238,3 +238,19 @@ ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node
 Use `rostopic list` and `rqt` to investigate what's going on and make sure you can drive both turtles.
 
 Can you get two copies of your turtle controller going to control each turtle separately?
+
+### Re-map
+
+Run the following, re-using `drive.py` from the exercise making your first publisher node.
+```
+rosrun ros_course drive.py turtle1/cmd_vel:=t2/turtle1/cmd_vel
+```
+You should see the second turtle move, instead of the first.  Compare the effect with and without the `/turtle1/cmd_vel:=` bit on the end.  This is a _re-map_ command: when `drive.py` publishes to `turtle1/cmd_vel` the re-map re-routes the topic to `t2/turtle1/cmd_vel`.
+
+Now kill the second turtle simulator and try this:
+```
+ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node /t2/turtle1/cmd_vel:=/turtle1/cmd_vel
+```
+Try driving the first turtle and you should see the second one go as well.  Use `rqt-graph` to verify what's going on.  You should see that the re-map has connected the second turtle's input to the same topic as the first turtle.
+
+
