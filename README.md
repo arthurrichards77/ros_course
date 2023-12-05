@@ -9,7 +9,7 @@ ROS (in our context) stands for the [Robot Operating System](https://ros.org/). 
 
 This version of tutorial is written and tested for ROS Noetic (having evolved over years from previous versions).  All coding will be done in Python, although C++ is also supported.
 
-Key ROS topics are *nodes* (programmes that talk using ROS) and *topics* (channels over which messages are exchanged).  A ROS _node_ works by publishing and/or subscribing to different ROS _topics_.
+Key ROS concepts are *nodes* (programmes that talk using ROS) and *topics* (channels over which messages are exchanged).  A ROS _node_ works by publishing and/or subscribing to different ROS _topics_.
 
 > ROS topics are asynchronous, like emails.  You send one, and you may or may not get an answer.  ROS also supports *services* which are like phone calls.  A services is called and gives a response.  Services are gest avoided for various reasons, not least because they block the caller.  There are also *actions* which are special arrangements of _topics_ offering call, response, progress reports, cancellation or completion.  They're much more flexible and robust, but complicated, beyond the scope.
 
@@ -84,7 +84,7 @@ rospack list
 
 ## A Publisher Node
 Put the following in a file `drive.py` in the `scripts` directory of your new ROS package. 
-```
+```python
 #!/usr/bin/python
 import rospy
 from geometry_msgs.msg import Twist
@@ -125,3 +125,75 @@ You should see your turtle wander aimlessly round its world, probably up against
 
 > You would have got away with just executing the file, but the `rosrun` is the _right_ way and we'll need it later.
 
+## A subscriber node
+
+Make the file below in your `scripts` directory and `chmod +x` it to make it executable.  With roscore, the turtle and your turtle driver still running, run this file too.
+```python
+#!/usr/bin/python
+import rospy
+from geometry_msgs.msg import Twist
+from turtlesim.msg import Pose
+from math import sqrt
+
+# start the node
+rospy.init_node('listen')    
+
+# callback for pose does all the work
+def pose_callback(data):
+  rospy.loginfo("x is now %f" % data.x)
+
+# and the subscriber
+rospy.Subscriber("turtle1/pose",Pose,pose_callback)
+rospy.spin()
+```
+You should see loads of messages telling you the X position of the turtle.
+
+> Try using RQT to see the same topic and investigate what else is in the message.
+
+## Close a loop
+
+Time to close a feedback loop, requiring a node that can both publish and subscribe.  Remember that remark about the ROS timing model?  This is where it needs a little thought.  The subscriber runs in its own thread, with the callback function triggered by an incoming message.  We _could_:
+1. Put the publishing in the callback function, but that means we don't have control over the update rate.  It also means _everything_ from measurement to response has to be in the callback, which can be a problem if it overruns and the next one comes in before we've finished the first one.
+2. Have the callback write the measurement into a global variable that gets picked up by the main thread at a controlled, constant rate.  This is much better for timing, but global variables are generally frowned upon for creating wormholes in code.
+3. _The winner_: write the controller as a class and use a class property to communicate between the threads.  This encapsulates the wormhole and is much easier to maintain.
+
+Make the following file in your scripts directory.
+```python
+#!/usr/bin/python
+import rospy
+from geometry_msgs.msg import Twist
+from turtlesim.msg import Pose
+from math import sqrt
+
+class TurtleControlNode:
+
+  def __init__(self):
+    self.radius = 4.0
+    # start the node
+    rospy.init_node('loop_tidy')    
+    # set up a publisher
+    self.pub = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size=3)
+    # rate and control
+    self.rate = rospy.Rate(10)
+    self.msg = Twist()
+
+  def poseCallback(self,data):
+    self.radius = sqrt((data.x-5.0)**2 + (data.y-5.0)**2)
+    rospy.loginfo("radius is now %f" % self.radius)
+
+  def run(self):
+    # start the subscriber
+    rospy.Subscriber("turtle1/pose",Pose,self.poseCallback)
+    # main control loop
+    while not rospy.is_shutdown():
+      turn_rate = 0.3*(self.radius - 4.0)
+      self.msg.linear.x = 0.5
+      self.msg.angular.z = turn_rate
+      self.pub.publish(self.msg)
+      self.rate.sleep()
+
+if __name__=='__main__':
+  t = TurtleControlNode()
+  t.run()
+```
+To run it, kill off any existing turtle drivers or listeners, but keep the `roscore` and the `turtlesim_nod` running.  Now run the control node.  It's supposed to stabilize your turtle on a circle of radius 4.  It probably won't, as we've not designed the controller very well, but you should see something happening.
