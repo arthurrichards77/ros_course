@@ -3,6 +3,8 @@ Short ROS training course at the Bristol Robotics Lab, developed by the FARSCOPE
 
 ## Background
 
+![A blackboard with writing on it](blackboard.jpg)
+
 ROS (in our context) stands for the [Robot Operating System](https://ros.org/).  It's not really an operating system as it runs on top of Ubuntu Linux, but it provides a blackboard-type message passing and standards for robots.  ROS is great for being supported by lots of off-the-shelf robots, making it easy to share and build on existing software, and taking care of repetitive housekeeping stuff like logging.  However, the learning curve is quite steep, it's quite limited to Ubuntu, the timing model is challenging, and it's hard to keep up with regular upgrades.
 
 > ROS2 has been released that improves things like networking, security, and the timing model.  It also offers Windows support.  However, it is sometimes even more complicated.  We've chosen to stay with ROS "1" for now.
@@ -214,3 +216,8 @@ if __name__=='__main__':
   t.run()
 ```
 To run it, kill off any existing turtle drivers or listeners, but keep the `roscore` and the `turtlesim_nod` running.  Now run the control node.  It's supposed to stabilize your turtle on a circle of radius 4.  It probably won't, as we've not designed the controller very well, but you should see something happening.
+
+Tyoe `rqt-graph` to inspect the nodes and topics in use.  Play with the settings to see what's available.  You should see sonething like the image below.
+
+![ROS topic graph](rosgraph.png)
+
