@@ -251,6 +251,8 @@ Now kill the second turtle simulator and try this:
 ```
 ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node /t2/turtle1/cmd_vel:=/turtle1/cmd_vel
 ```
+
+![ROS topic graph](remap_graph.png)
 Try driving the first turtle and you should see the second one go as well.  Use `rqt-graph` to verify what's going on.  You should see that the re-map has connected the second turtle's input to the same topic as the first turtle.
 
 
