@@ -125,6 +125,23 @@ You should see your turtle wander aimlessly round its world, probably up against
 
 > You would have got away with just executing the file, but the `rosrun` is the _right_ way and we'll need it later.
 
+## Configure your node with a parameter
+
+ROS supports a parameter server for sharing configuration information between nodes.  Let's use it to set the turtle speed.  Edit the `turtle_speed = ` line as shown below.
+
+```
+# get speed from parameter
+turtle_speed = rospy.get_param('turtle1/turtle_speed',1.0)
+```
+
+Re-run the node and the turtle should move with the default speed of 1.0.  Now stop the node and run the following
+```
+rosparam set /turtle1/turtle_speed 0.2
+```
+Run the node again and you should have a very slow turtle.
+
+> Parameters are slower than topics and support different access mechanisms.  Use them only for configuration, reading and setting parameters when a node starts.  They should not be used for live communication between nodes.
+
 ## A subscriber node
 
 Make the file below in your `scripts` directory and `chmod +x` it to make it executable.  With roscore, the turtle and your turtle driver still running, run this file too.
