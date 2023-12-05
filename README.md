@@ -61,11 +61,13 @@ Now in a new terminal or tab (press Ctrl+Shift+T), run the turtle simulator:
 ```
 rosrun turtlesim turtlesim_node
 ```
-And now manually send a command to the turtle
+Use `rostopic list` to explore what topics have been created.  `rostopic echo <topic>` will show what's being published to them.
+
+Now manually send a command to the turtle
 ```
 rostopic pub /turtle1/cmd_vel geometry_msgs/Twist '{linear:  {x: 1.2, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: 0.2}}'
 ```
-And then use RQT for the same job
+And then use RQT for the same job, using either the message publisher plug-in or the robot steering plug-in.
 ```
 rqt
 ```
@@ -221,3 +223,18 @@ Tyoe `rqt-graph` to inspect the nodes and topics in use.  Play with the settings
 
 ![ROS topic graph](rosgraph.png)
 
+## Exercise: Bouncing Turtle
+
+Modify your turtle controller so the turtle changes direction when it hits a wall.  It's not as easy as it sounds.
+
+## Namespaces and re-mapping
+
+When accessing files in code, you're probably familiar with the idea of a relative path, interpreted with respect to the current working directory.  ROS does something similar with topics, which can be relative to the current working _namespace_.  Now we'll use this idea to re-use our existing code to drive two different turtles.
+
+Get your first turtle simulator up and running and then start a second using the following.
+```
+ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node
+```
+Use `rostopic list` and `rqt` to investigate what's going on and make sure you can drive both turtles.
+
+Can you get two copies of your turtle controller going to control each turtle separately?
