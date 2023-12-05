@@ -253,4 +253,57 @@ ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node /t2/turtle1/cmd_vel:=/turtle1/
 ```
 Try driving the first turtle and you should see the second one go as well.  Use `rqt-graph` to verify what's going on.  You should see that the re-map has connected the second turtle's input to the same topic as the first turtle.
 
+![ROS topic graph](remap_graph.png)
 
+### Namespace
+
+Get back to having two turtles running again, independently.  From scratch:
+```
+rosrun turtlesim turtlesim_node
+ROS_NAMESPACE=/t2 rosrun turtlesim turtlesim_node
+```
+Now run your feedback controller node using:
+```
+rosrun ros_course <your turtle control node>
+```
+You should see the first turtle do its wobbling around in circles but the second turtle stay still.  Now start a second controller using:
+```
+ROS_NAMESPACE=/t2 rosrun ros_course <your turtle control node>
+```
+
+### Summary
+
+Re-maps are great for re-use or re-plumbing.  If you have downloaded a package for some job, but your robot uses different names for the sensor or control channels, re-map is the answer.  Or, you might want to break an existing connection and put something extra in the loop -- again, re-mapping will solve the problem.
+
+Namespaces are great for repetition.  Suppose you want to have three robots, or your robot has two arms, left and right.  Namespaces for each will enable slick re-use of the same functionality without code changes.
+
+Overall, these features greatly add to ROS' modularity: the ability to make a node that does a job, and then leave it untouched while you use it in different ways.
+
+## Launch files
+
+By now, you ought to be fed up launching terminals and keeping track of them.  Stop everything you have running, including your `roscore`, and have just one terminal.  We'll use launch files to run all the examples above with just one command.
+
+Make a file called `turtle.launch` in a `launch` directory below `src` in your package, containing the following:
+```xml
+<launch>
+   <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+   <node name="control1" pkg="ros_course" type="drive.py" />
+</launch>
+```
+Now run it using
+```
+roslaunch ros_course turtle.launch
+```
+Three things happen at once: a `roscore` is launched for you, so is a simulator, and so is your driver code.  You should see a turtle wandering aimlessly.  Stop everything with a single `<Ctrl>+C`.
+
+Copy your file to `turtle2.launch` and edit to the following:
+```xml
+<launch>
+   <param name="turtle1/turtle_speed" value="0.3" />
+   <node name="turtle1" pkg="turtlesim" type="turtlesim_node" />
+   <node name="control1" pkg="ros_course" type="drive.py" />
+</launch>
+```
+Run this one and you should see a slow turtle, as a result of setting the speed parameter.
+
+Now try this file, which reproduces the example where two turtles are driven by the same driver using a re-map:
