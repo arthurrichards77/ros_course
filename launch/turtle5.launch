@@ -1,0 +1,10 @@
+<launch>
+
+  <include file="$(find ros_course)/launch/turtle.launch" />
+
+  <group ns="t2">
+    <include file="$(find ros_course)/launch/turtle.launch" />
+  </group>
+
+</launch>
+
