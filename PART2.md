@@ -10,7 +10,7 @@ Create a `urdf` subfolder in your `ros_course` folder.  In it, make the followin
 <?xml version="1.0"?>
 <robot name="turtle">
 
-  <link name="base_link">
+  <link name="turtle1/base_link">
     <visual>
       <geometry>
         <cylinder length="0.2" radius="0.5"/>
@@ -19,7 +19,7 @@ Create a `urdf` subfolder in your `ros_course` folder.  In it, make the followin
     </visual>
   </link>
 
-  <link name="head">
+  <link name="turtle1/head">
     <visual>
       <geometry>
         <box size="0.2 0.2 0.2"/>
@@ -28,9 +28,9 @@ Create a `urdf` subfolder in your `ros_course` folder.  In it, make the followin
     </visual>
   </link>
 
-  <joint name="head_to_body" type="fixed">
-    <parent link="base_link"/>
-    <child link="head"/>
+  <joint name="turtle1/head_to_body" type="fixed">
+    <parent link="turtle1/base_link"/>
+    <child link="turtle1/head"/>
     <origin xyz="0 0 0"/>
   </joint>
 
@@ -55,3 +55,70 @@ It would be good to connect our turtle model to the simulation, with the goal of
 > This illustrates a different way of using a topic, as a broadcast channel rather than point-to-point.
 
 Some simulators and robots support TF themselves, but we need an extra node to report the turtle position as a transform using TF.  Make the following in your scripts folder:
+```python
+#!/usr/bin/env python  
+import roslib
+roslib.load_manifest('ros_course')
+import rospy
+import tf
+import turtlesim.msg
+
+class TurtleTfPublisher:
+
+    def __init__(self):
+        rospy.init_node('turtle_tf_broadcaster', anonymous=True)
+        self.turtle_name = rospy.resolve_name('turtle1')
+        self.tf_broadcaster = tf.TransformBroadcaster()
+    
+    def pose_callback(self, msg):
+        self.tf_broadcaster.sendTransform((msg.x, msg.y, 0),
+                                          tf.transformations.quaternion_from_euler(0, 0, msg.theta),
+                                          rospy.Time.now(),
+                                          self.turtle_name+'/base_link',
+                                          "world")
+
+    def run(self):
+        rospy.Subscriber('turtle1/pose',
+                         turtlesim.msg.Pose,
+                         self.pose_callback)
+        rospy.spin()
+
+if __name__ == '__main__':
+    tp = TurtleTfPublisher()
+    tp.run()
+```
+Note that TF is so common, they've wrapped the publishing in a little client helper for us.  This would work with the same `publish` method we used earlier too.
+
+Finally we will need a launch file to start everything:
+```xml
+<launch>
+    <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+    <node name="driver" pkg="ros_course" type="drive.py" />
+    <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
+    <node name="rviz" pkg="rviz" type="rviz" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+</launch>
+```
+It's worth talking this through:
+```xml
+<param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
+```
+The line above reads our URDF model into a parameter named `robot_description`.  RViz and several other ROS tools look here by default for the URDF of the robot.
+```xml
+<node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+<node name="driver" pkg="ros_course" type="drive.py" />
+```
+The two lines above start the turtle simulator and our rdiver node from part 1, that just made it wander randomly.
+```xml
+<node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
+```
+Above starts the new node that publishes the turtle pose to `/tf`.
+```xml
+<node name="rviz" pkg="rviz" type="rviz" />
+```
+Above launches the `RViz` viewer tool.
+```xml
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+```
+Finally the line above starts a `robot_state_publisher` node which is a standard tool in ROS.  It reads the URDF from the `robot_description` model and calculates the transforms between the different links, publishing them to TF.  THis is the link between URDF and TF.  If our robot model including moving joints, it would read their values in and determine the forward kinematics for us. 
