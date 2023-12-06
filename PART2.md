@@ -189,3 +189,6 @@ Here is the magic of TF.  The built-in `TransformListener` object will subscribe
 
 Run this alongside the two turtle simulation above and you should see messages showing the position of Margaret relative to Bob, _i.e._ where is Margaret in the ference frame attached to Bob.  See if you can verify it with what you see on the screen.
 
+## Exercise: make Bob follow Margaret
+
+Write a node and associated launch file to make one turtle point towards the other, or even follow the other one around.  Re-use existing components as much as possible.
