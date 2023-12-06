@@ -1,20 +1,16 @@
 <launch>
   
-  <param name="robot_description" command="cat $(find ros_course)/urdf/two_turtles.xml" />
-  
   <node name="rviz" pkg="rviz" type="rviz" />
 
   <group ns="bob">
     <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />  
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     <node name="drive" pkg="ros_course" type="drive2.py" />
   </group>
 
   <group ns="margaret">
     <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     <node name="drive" pkg="ros_course" type="drive2.py" />
   </group>
 
