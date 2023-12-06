@@ -1,35 +1,21 @@
 <launch>
   
-  <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
+  <param name="robot_description" command="cat $(find ros_course)/urdf/two_turtles.xml" />
   
   <node name="rviz" pkg="rviz" type="rviz" />
 
   <group ns="bob">
-
-    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
-  
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />  
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
-  
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-
-    <param name="tf_prefix" value="/bob/turtle1" />
-
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="drive" pkg="ros_course" type="drive2.py" />
   </group>
 
   <group ns="margaret">
-
     <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
-  
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
-  
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-
-    <param name="tf_prefix" value="/margaret/turtle1" />
-
-    <param name="turtle1/target/x" value="1.0" />
-    <param name="turtle1/target/y" value="3.0" />
-    <node name="target" pkg="ros_course" type="target.py" />
-    
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="drive" pkg="ros_course" type="drive2.py" />
   </group>
 
 </launch>

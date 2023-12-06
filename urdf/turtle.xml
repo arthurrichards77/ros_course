@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="turtle">
-  <link name="base_link">
+  <link name="turtle1/base_link">
     <visual>
       <geometry>
         <cylinder length="0.2" radius="0.5"/>
@@ -9,7 +9,7 @@
     </visual>
   </link>
 
-  <link name="head">
+  <link name="turtle1/head">
     <visual>
       <geometry>
         <box size="0.2 0.2 0.2"/>
@@ -18,9 +18,9 @@
     </visual>
   </link>
 
-  <joint name="head_to_body" type="fixed">
-    <parent link="base_link"/>
-    <child link="head"/>
+  <joint name="turtle1/head_to_body" type="fixed">
+    <parent link="turtle1/base_link"/>
+    <child link="turtle1/head"/>
     <origin xyz="0 0 0"/>
   </joint>
 

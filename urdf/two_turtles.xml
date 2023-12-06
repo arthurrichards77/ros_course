@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<robot name="two_turtles">
+  <link name="/bob/turtle1/base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.2" radius="0.5"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.11"/>
+    </visual>
+  </link>
+
+  <link name="/bob/turtle1/head">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.2"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.5 0 0.2"/>
+    </visual>
+  </link>
+
+  <joint name="/bob/turtle1/head_to_body" type="fixed">
+    <parent link="/bob/turtle1/base_link"/>
+    <child link="/bob/turtle1/head"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+
+  <link name="/margaret/turtle1/base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.2" radius="0.5"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.11"/>
+    </visual>
+  </link>
+
+  <link name="/margaret/turtle1/head">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.2"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.5 0 0.2"/>
+    </visual>
+  </link>
+
+  <joint name="/margaret/turtle1/head_to_body" type="fixed">
+    <parent link="/margaret/turtle1/base_link"/>
+    <child link="/margaret/turtle1/head"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+
+</robot>

@@ -1,8 +1,8 @@
 <launch>
-    <param name="turtle1/target/x" value="1.0" />
-    <param name="turtle1/target/y" value="3.0" />
+    <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
     <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
-    <node name="target" pkg="ros_course" type="target.py" />
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
     <node name="rviz" pkg="rviz" type="rviz" />
+    <node name="driver" pkg="ros_course" type="drive2.py" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 </launch>
