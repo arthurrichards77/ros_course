@@ -89,6 +89,8 @@ if __name__ == '__main__':
 ```
 Note that TF is so common, they've wrapped the publishing in a little client helper for us.  This would work with the same `publish` method we used earlier too.
 
+> Quaternions?  These are an elegant way of [representing a rotational transformation](https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation).  You might think of a transform as three angles, _e.g._ roll, pitch and yaw, but there are ambiguous definitions of those angles and they exhibit singularities in some orientations.  The full 3x3 transformation matrix is unambiguous but needs nine numbers to encode.  A quaternion is only four numbers but avoids the singularity and ambiguity issues.  Details are beyond our scope here, but if you get into anything geometric, learn to love them.  [Never work with angles!](https://tomekent.com/post/neuron_saturation/)
+
 Finally we will need a launch file to start everything:
 ```xml
 <launch>
@@ -130,4 +132,60 @@ Run the launch file and you should see a simple turtle model ambling round the R
 ## Two turtles together
 
 > At this point we're going to have to say goodbye to the URDF.  An update to the `robot_state_publisher` in ROS Noetic removed a really useful feature for multi-robot work and made it much harder to have two URDF robot models in the same system.  The issue has actually [been fixed](https://github.com/ros/robot_state_publisher/pull/169) in the source code, and there are workarounds, but all beyond the scope of this tutorial.
+
+Run this launch file:
+```xml
+<launch>
+  
+  <node name="rviz" pkg="rviz" type="rviz" />
+
+  <group ns="bob">
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />  
+    <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
+    <node name="drive" pkg="ros_course" type="drive.py" />
+  </group>
+
+  <group ns="margaret">
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" />
+    <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
+    <node name="drive" pkg="ros_course" type="drive.py" />
+  </group>
+
+</launch>
+```
+This is going to run two turtles with attached TF publishers and random drivers.  You won't see the URDF models any more, but with the `TF` viewer turned on in RViz, you should see two little arrows and reference frame axes representing the movements of the two turtles.
+
+### Inter-turtle relations
+
+Add the following Python script to your `ros_course` package.
+```python
+#!/usr/bin/env python  
+import roslib
+roslib.load_manifest('ros_course')
+import rospy
+from math import atan2
+import tf
+import geometry_msgs.msg
+
+rospy.init_node('tf_turtle')
+
+listener = tf.TransformListener()
+
+rate = rospy.Rate(1.0)
+
+while not rospy.is_shutdown():
+    try:
+        (trans,rot) = listener.lookupTransform('/bob/turtle1/base_link', '/margaret/turtle1/base_link', rospy.Time(0))
+    except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+        continue
+
+    print("Margaret relative to Bob")
+    print(trans)
+
+    rate.sleep()
+```
+
+Here is the magic of TF.  The built-in `TransformListener` object will subscribe to the `/tf` topic and keep track of all the messages it receives.  Then we can query it for the relative transform between two reference frames -- even though the connections between those frames and their intermediates came from different source nodes.  One publisher told us how Bob relates to World, another node told how Margaret relates to World, and TF fills in all the transforms and inverse transforms to join the two.
+
+Run this alongside the two turtle simulation above and you should see messages showing the position of Margaret relative to Bob, _i.e._ where is Margaret in the ference frame attached to Bob.  See if you can verify it with what you see on the screen.
 
