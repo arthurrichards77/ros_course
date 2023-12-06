@@ -351,3 +351,9 @@ Isn't that tidy?
 ## Exercise: Obstacle Avoidance
 
 Without changing any existing nodes, add a capability to avoid an obstacle centred at position (5, 5).  This should be embodied in a new node, which intercepts the command velocity between your current controller and the turtle.  In its simplest form, it should stop the turtle if it gets too close to the obstacle; otherwise, it passes along the velocity command it received.  Put it all together in a launch file, including necessary re-maps or namespace changes.  **You should not need to change any existing node source files.  Only edit the new node and the new launch file.**
+
+## What next?
+
+If you're ahead of time, try the [networking example](NETWORKING.md) to get ROS working across two different computers.
+
+Otherwise move straight to [Part 2](PART2.md).
