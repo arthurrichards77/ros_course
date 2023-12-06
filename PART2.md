@@ -36,7 +36,7 @@ Create a `urdf` subfolder in your `ros_course` folder.  In it, make the followin
 
 </robot>
 ```
-This describes our model as two _links_ (solid shapes) connected by a single fixed _joint_.
+This is [URDF](http://wiki.ros.org/urdf), an XML schema for describing robots that is supported by lots of ROS tools.  This describes our model as two _links_ (solid shapes) connected by a single fixed _joint_.
 
 > URDF can handle much more complicated models including CAD descriptions of links and various types of moving joints.  We're only just dipping in.
 
@@ -50,7 +50,7 @@ All being well you should see a turtle picture.  The viewer program is RVIZ, whi
 
 ## Animating the turtle
 
-It would be good to connect our turtle model to the simulation, with the goal of seeing multiple turtles move together and interact.  We'll do this using TF, a ROS convention that enables common handling of _transforms_ between reference frames.  Any node can publish a transform message to the common topic `/tf` reporting where one named frame is relative to another.  Then a standard software client can subscribe to `/tf` and calculate the relation between any two known frames.  We'll use it to figure out where one turtle is relative to another.
+It would be good to connect our turtle model to the simulation, with the goal of seeing multiple turtles move together and interact.  We'll do this using [TF](http://wiki.ros.org/tf), a ROS convention that enables common handling of _transforms_ between reference frames.  Any node can publish a transform message to the common topic `/tf` reporting where one named frame is relative to another.  Then a standard software client can subscribe to `/tf` and calculate the relation between any two known frames.  We'll use it to figure out where one turtle is relative to another.
 
 > This illustrates a different way of using a topic, as a broadcast channel rather than point-to-point.
 
@@ -122,3 +122,12 @@ Above launches the `RViz` viewer tool.
 <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 ```
 Finally the line above starts a `robot_state_publisher` node which is a standard tool in ROS.  It reads the URDF from the `robot_description` model and calculates the transforms between the different links, publishing them to TF.  THis is the link between URDF and TF.  If our robot model including moving joints, it would read their values in and determine the forward kinematics for us. 
+
+Run the launch file and you should see a simple turtle model ambling round the RViz screen.  Also look closely at the TF arrows and poke around RViz a bit - it's very useful.
+
+> Can't see it?  In the `Displays` pane click `Add` and include the `TF` display and the `RobotModel` display.
+
+## Two turtles together
+
+> At this point we're going to have to say goodbye to the URDF.  An update to the `robot_state_publisher` in ROS Noetic removed a really useful feature for multi-robot work and made it much harder to have two URDF robot models in the same system.  The issue has actually [been fixed](https://github.com/ros/robot_state_publisher/pull/169) in the source code, and there are workarounds, but all beyond the scope of this tutorial.
+
