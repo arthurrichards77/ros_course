@@ -18,8 +18,8 @@ while not rospy.is_shutdown():
     except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
         continue
 
-    print "Margaret relative to Bob"
-    print trans
-    print rot
+    print("Margaret relative to Bob")
+    print(trans)
+    print(rot)
 
     rate.sleep()

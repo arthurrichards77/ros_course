@@ -1,8 +1,6 @@
 <launch>
   
-  <param name="robot_description" command="cat $(find ros_course)/urdf/turtle.xml" />
-  
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_course)/launch/stare.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" />
 
   <group ns="bob">
 
@@ -10,10 +8,6 @@
   
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
   
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-
-    <param name="tf_prefix" value="/bob/turtle1" />
-
   </group>
 
   <group ns="margaret">
@@ -21,11 +15,7 @@
     <include file="$(find ros_course)/launch/bounce_turtle.launch" />
 
     <node name="tfpub" pkg="ros_course" type="turtle_tf_pub.py" />
-  
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-
-    <param name="tf_prefix" value="/margaret/turtle1" />
-    
+      
   </group>
 
   <node name="stare" pkg="ros_course" type="stare.py" />
