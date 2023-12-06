@@ -45,3 +45,13 @@ The URDF tutorial package in ROS comes with a helpful viewing utility for develo
 roslaunch urdf_tutorial display.launch model:=turtle.xml 
 ```
 All being well you should see a turtle picture.  The viewer program is RVIZ, which we will see much more of.
+
+![URDF model of a turtle robot](turtle_urdf.png)
+
+## Animating the turtle
+
+It would be good to connect our turtle model to the simulation, with the goal of seeing multiple turtles move together and interact.  We'll do this using TF, a ROS convention that enables common handling of _transforms_ between reference frames.  Any node can publish a transform message to the common topic `/tf` reporting where one named frame is relative to another.  Then a standard software client can subscribe to `/tf` and calculate the relation between any two known frames.  We'll use it to figure out where one turtle is relative to another.
+
+> This illustrates a different way of using a topic, as a broadcast channel rather than point-to-point.
+
+Some simulators and robots support TF themselves, but we need an extra node to report the turtle position as a transform using TF.  Make the following in your scripts folder:
